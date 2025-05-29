@@ -10,16 +10,21 @@ export const Navbar: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path
 
+  // Check if user is admin (you can implement your own logic)
+  const isAdmin = user?.email === 'admin@authguard.com' // Example admin check
+
   return (
-    <nav className="bg-white border-b border-secondary-200 sticky top-0 z-40">
+    <nav className="bg-white/95 backdrop-blur-sm border-b border-red-200 sticky top-0 z-50 shadow-soft">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <i className="bi bi-shield-lock text-white text-lg"></i>
+            <Link to="/" className="flex items-center space-x-3 group">
+              <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <i className="bi bi-shield-lock text-white text-xl"></i>
               </div>
-              <span className="text-xl font-bold text-secondary-900">AuthGuard</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                AuthGuard
+              </span>
             </Link>
           </div>
 
@@ -28,50 +33,59 @@ export const Navbar: React.FC = () => {
             {user ? (
               <>
                 <Link
-                  to="/dashboard"
-                  className={`text-sm font-medium transition-colors ${
-                    isActive('/dashboard') 
-                      ? 'text-primary-600' 
-                      : 'text-secondary-600 hover:text-secondary-900'
+                  to={isAdmin ? "/admin" : "/dashboard"}
+                  className={`text-sm font-medium transition-colors hover:text-red-600 ${
+                    isActive(isAdmin ? '/admin' : '/dashboard') 
+                      ? 'text-red-600' 
+                      : 'text-secondary-600'
                   }`}
                 >
-                  Dashboard
+                  {isAdmin ? 'Admin Panel' : 'Dashboard'}
                 </Link>
-                <Link
-                  to="/applications"
-                  className={`text-sm font-medium transition-colors ${
-                    isActive('/applications') 
-                      ? 'text-primary-600' 
-                      : 'text-secondary-600 hover:text-secondary-900'
-                  }`}
-                >
-                  Applications
-                </Link>
-                <Link
-                  to="/licenses"
-                  className={`text-sm font-medium transition-colors ${
-                    isActive('/licenses') 
-                      ? 'text-primary-600' 
-                      : 'text-secondary-600 hover:text-secondary-900'
-                  }`}
-                >
-                  Licenses
-                </Link>
-                <Link
-                  to="/analytics"
-                  className={`text-sm font-medium transition-colors ${
-                    isActive('/analytics') 
-                      ? 'text-primary-600' 
-                      : 'text-secondary-600 hover:text-secondary-900'
-                  }`}
-                >
-                  Analytics
-                </Link>
+                {!isAdmin && (
+                  <>
+                    <Link
+                      to="/applications"
+                      className={`text-sm font-medium transition-colors hover:text-red-600 ${
+                        isActive('/applications') 
+                          ? 'text-red-600' 
+                          : 'text-secondary-600'
+                      }`}
+                    >
+                      Applications
+                    </Link>
+                    <Link
+                      to="/licenses"
+                      className={`text-sm font-medium transition-colors hover:text-red-600 ${
+                        isActive('/licenses') 
+                          ? 'text-red-600' 
+                          : 'text-secondary-600'
+                      }`}
+                    >
+                      Licenses
+                    </Link>
+                    <Link
+                      to="/analytics"
+                      className={`text-sm font-medium transition-colors hover:text-red-600 ${
+                        isActive('/analytics') 
+                          ? 'text-red-600' 
+                          : 'text-secondary-600'
+                      }`}
+                    >
+                      Analytics
+                    </Link>
+                  </>
+                )}
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                    <i className="bi bi-person text-primary-600"></i>
+                  <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+                    <i className="bi bi-person text-white text-sm"></i>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={signOut}>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={signOut}
+                    className="text-secondary-600 hover:text-red-600"
+                  >
                     Sign Out
                   </Button>
                 </div>
@@ -80,12 +94,14 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-colors"
+                  className="text-sm font-medium text-secondary-600 hover:text-red-600 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">Get Started</Button>
+                  <Button size="sm" className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800">
+                    Get Started
+                  </Button>
                 </Link>
               </div>
             )}
@@ -95,7 +111,7 @@ export const Navbar: React.FC = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-secondary-600 hover:text-secondary-900 transition-colors"
+              className="text-secondary-600 hover:text-red-600 transition-colors p-2"
             >
               <i className={`bi ${isMenuOpen ? 'bi-x' : 'bi-list'} text-xl`}></i>
             </button>
@@ -104,38 +120,47 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-secondary-200">
+          <div className="md:hidden py-4 border-t border-red-200 bg-white/95 backdrop-blur-sm">
             {user ? (
               <div className="space-y-3">
                 <Link
-                  to="/dashboard"
-                  className="block text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-colors"
+                  to={isAdmin ? "/admin" : "/dashboard"}
+                  className="block text-sm font-medium text-secondary-600 hover:text-red-600 transition-colors py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Dashboard
+                  {isAdmin ? 'Admin Panel' : 'Dashboard'}
                 </Link>
-                <Link
-                  to="/applications"
-                  className="block text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                {!isAdmin && (
+                  <>
+                    <Link
+                      to="/applications"
+                      className="block text-sm font-medium text-secondary-600 hover:text-red-600 transition-colors py-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Applications
+                    </Link>
+                    <Link
+                      to="/licenses"
+                      className="block text-sm font-medium text-secondary-600 hover:text-red-600 transition-colors py-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Licenses
+                    </Link>
+                    <Link
+                      to="/analytics"
+                      className="block text-sm font-medium text-secondary-600 hover:text-red-600 transition-colors py-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Analytics
+                    </Link>
+                  </>
+                )}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={signOut} 
+                  className="w-full justify-start text-secondary-600 hover:text-red-600"
                 >
-                  Applications
-                </Link>
-                <Link
-                  to="/licenses"
-                  className="block text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Licenses
-                </Link>
-                <Link
-                  to="/analytics"
-                  className="block text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Analytics
-                </Link>
-                <Button variant="ghost" size="sm" onClick={signOut} className="w-full justify-start">
                   Sign Out
                 </Button>
               </div>
@@ -143,13 +168,15 @@ export const Navbar: React.FC = () => {
               <div className="space-y-3">
                 <Link
                   to="/login"
-                  className="block text-sm font-medium text-secondary-600 hover:text-secondary-900 transition-colors"
+                  className="block text-sm font-medium text-secondary-600 hover:text-red-600 transition-colors py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In
                 </Link>
                 <Link to="/register" onClick={() => setIsMenuOpen(false)}>
-                  <Button size="sm" className="w-full">Get Started</Button>
+                  <Button size="sm" className="w-full bg-gradient-to-r from-red-600 to-red-700">
+                    Get Started
+                  </Button>
                 </Link>
               </div>
             )}

@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { Navbar } from './components/layout/Navbar'
+import { Footer } from './components/layout/Footer'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Landing } from './pages/Landing'
 import { Login } from './pages/Login'
@@ -12,6 +13,9 @@ import { Licenses } from './pages/Licenses'
 import { Analytics } from './pages/Analytics'
 import { Users } from './pages/Users'
 import { Settings } from './pages/Settings'
+import { AdminDashboard } from './pages/AdminDashboard'
+import { Terms } from './pages/Terms'
+import { Privacy } from './pages/Privacy'
 
 function App() {
   return (
@@ -22,11 +26,21 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />
@@ -71,13 +85,26 @@ function App() {
             }
           />
         </Routes>
+        <Footer />
         <Toaster
           position="top-right"
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#363636',
+              background: '#1f2937',
               color: '#fff',
+              borderRadius: '12px',
+              border: '1px solid #ef4444',
+            },
+            success: {
+              style: {
+                border: '1px solid #10b981',
+              },
+            },
+            error: {
+              style: {
+                border: '1px solid #ef4444',
+              },
             },
           }}
         />
